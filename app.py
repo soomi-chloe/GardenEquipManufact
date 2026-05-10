@@ -291,14 +291,14 @@ def plot_demand_prod_inv(res, period_labels):
     return fig
 
 def plot_cost_breakdown(cost_breakdown, period_labels):
-    df = pd.DataFrame(cost_breakdown).drop(columns=["기간"], errors="ignore")
-    df["기간"] = period_labels
     cost_cols = ["정규노동비","초과근무비","고용비","해고비","재고유지비","부재고비","재료비","하청비"]
-    colors = ["#3498DB","#F39C12","#2ECC71","#E74C3C","#9B59B6","#E67E22","#1ABC9C","#95A5A6"]
+    colors    = ["#3498DB","#F39C12","#2ECC71","#E74C3C","#9B59B6","#E67E22","#1ABC9C","#95A5A6"]
 
     fig = go.Figure()
     for col, color in zip(cost_cols, colors):
-        fig.add_trace(go.Bar(name=col, x=df["기간"], y=df[col], marker_color=color))
+        # cost_breakdown은 딕셔너리 리스트 — 키 없으면 0으로 처리
+        y_vals = [row.get(col, 0) for row in cost_breakdown]
+        fig.add_trace(go.Bar(name=col, x=period_labels, y=y_vals, marker_color=color))
 
     fig.update_layout(
         barmode="stack", height=360,
